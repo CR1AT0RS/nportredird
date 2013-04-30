@@ -1,0 +1,156 @@
+dnl configure.in for NPORTREDIRD process with autoconf
+
+AC_INIT(src/main.c)
+
+AC_CONFIG_HEADER(src/include/config.h)
+
+AC_PREFIX_DEFAULT(/usr/local)
+
+changequote(,)dnl
+PROG_MAJOR="`egrep '^PROG_MAJOR[  ]*=' ./.nportredird-ver | sed -e 's/^[^0-9]*//'`"
+PROG_MINOR="`egrep '^PROG_MINOR[  ]*=' ./.nportredird-ver | sed -e 's/^[^0-9]*//'`"
+PROG_PATCH="`egrep '^PROG_PATCH[  ]*=' ./.nportredird-ver | sed -e 's/^[^0-9]*//'`"
+PACKAGE=nportredird
+
+changequote([,])dnl
+it_v_v=${PROG_MAJOR}
+it_v_r=${PROG_MINOR}
+it_v_p=${PROG_PATCH}
+
+it_version=${PROG_MAJOR}.${PROG_MINOR}
+AC_MSG_RESULT(Hello `whoami`! today is `date`)
+AC_MSG_RESULT(configuring $PACKAGE $it_version (version $it_v_v release $it_v_r))
+
+
+AC_CACHE_VAL(nc_cv_systype,[
+changequote(,)dnl
+it_systype="`(uname -s || hostname || echo unknown) 2>/dev/null |sed -e s'/[:\/.-]/_/'g  | sed 1q`"
+changequote([,])dnl
+if test -z "$it_systype"; then it_systype=unknown;fi
+])
+AC_MSG_RESULT(system type is $it_systype)
+
+
+system_name="`(uname -s -r || hostname || echo unknown) 2>/dev/null`"
+if test -n "$system_name" ; then
+        AC_DEFINE_UNQUOTED(SYSTEM_NAME,"$system_name")
+else
+        system_name="`(hostname) 2>/dev/null`"
+fi
+AC_CACHE_VAL(nc_cv_system_name,[nc_cv_system_name="$system_name"])
+test -z "$system_name" && system_name="$nc_cv_system_name"
+test -n "$nc_cv_system_name" && AC_MSG_RESULT("configuring for $nc_cv_system_name")
+
+AM_SANITY_CHECK
+AM_INIT_AUTOMAKE($PACKAGE, $it_version, no-define)
+AC_PROG_MAKE_SET
+
+AC_PROG_CC
+AC_PROG_CPP
+
+CFLAGS=""
+LIBS=""
+DEF=""
+
+
+dnl AC_CACHE_CHECK(whether we are using GNU C, ac_cv_prog_gcc,
+dnl [
+dnl cat > conftest.c <<EOF
+dnl #ifdef __GNUC__
+dnl   yes;
+dnl #endif
+dnl EOF
+dnl if AC_TRY_COMMAND(${CC-cc} -E conftest.c) | egrep yes >/dev/null 2>&1; then
+dnl   ac_cv_prog_gcc=yes
+dnl else
+dnl  AC_MSG_ERROR(need gcc to compile) 
+dnl fi])
+
+ AC_CHECK_PROG(STRIP,strip,-s)
+ AC_PROG_INSTALL
+ AC_PROG_YACC
+ AC_PROG_LEX
+
+dnl  CF_PATH_PROG(CHMOD,     chmod)
+dnl  CF_PATH_PROG(COPY,      cp)
+dnl  CF_PATH_PROG(MKDIR,     mkdir)
+dnl  CF_PATH_PROG(MV,        mv)
+dnl  CF_PATH_PROG(RM,        rm)
+dnl  CF_PATH_PROG(TOUCH,     touch)
+dnl  CF_PATH_PROG(LN,     ln)
+
+AC_CHECK_LIB(socket,socket)
+AC_CHECK_LIB(nsl,connect)
+AC_CHECK_LIB(dns,gethostbyname)
+
+ AC_CHECK_LIB(pthread,
+              pthread_create,
+              [look_for_pthread=yes]
+               LIBS="-lpthread $LIBS")
+dnl              [AC_MSG_ERROR(POSIX-compatible threads library is needed.)])
+
+ if test "$look_for_pthread" != "yes"; then
+ if test "x$__system" = "xFreeBSD"; then
+  AC_CHECK_LIB(c_r, 
+               pthread_create,
+               [look_for_pthread=yes]
+               LIBS="-lc_r $LIBS")
+ dnl              [AC_MSG_ERROR(POSIX-compatible threads library is needed.)])
+ fi
+ fi
+
+if test x$look_for_pthread != xyes; then
+ AC_MSG_ERROR(POSIX-compatible threads library is needed.)
+fi
+
+if test x$look_for_pthread = xyes
+  then
+AC_MSG_CHECKING(for location of <pthread.h>)
+
+  for dir in /usr/include /usr/include/pthread \
+             /usr/local/include /usr/local/include/pthread
+    do 
+      if test -f $dir/pthread.h
+      then pthread_found=yes; DEF="$DEF -D_REENTRANT"; \
+           CFLAGS="$CFLAGS -I$dir"; AC_DEFINE(_HAVE_PTHREAD_H) break 
+      fi
+    done
+
+  if test x$pthread_found = xyes
+  then AC_MSG_RESULT($dir)
+  else AC_MSG_ERROR(can't find pthread.h)
+  fi
+fi
+
+dnl check for sa_len in struct sockaddr
+AC_MSG_CHECKING(sa_len member in struct sockaddr)
+ AC_TRY_COMPILE([#include <sys/types.h> 
+                 #include <sys/socket.h>], 
+                 [struct sockaddr sa; sa.sa_len;],
+                 [AC_DEFINE(HAVE_SA_LEN)
+                 AC_MSG_RESULT(yes)],
+                 AC_MSG_RESULT(no)
+                )
+
+dnl check for sa_len in struct sockaddr
+AC_MSG_CHECKING(hstrerror())
+ AC_TRY_LINK([#include <netdb.h>],
+                 [extern int h_errno; hstrerror(HOST_NOT_FOUND);],
+                 [AC_DEFINE(HAVE_HSTRERROR)
+                 AC_MSG_RESULT(yes)],
+                 AC_MSG_RESULT(no)
+                )
+
+
+AC_SUBST(it_version)
+AC_SUBST(CC)
+AC_SUBST(LIBS)
+AC_SUBST(DEF)
+AC_SUBST(STRIP)
+AC_SUBST(CFLAGS)
+
+AC_OUTPUT(Makefile src/Makefile)
+
+echo ""
+echo " You may now want to type \`\`make'' to actually compile the source."
+echo ""

@@ -1,0 +1,337 @@
+/*
+    nportredird - TCP/IP networks port forwarder daemon.
+
+    Copyright (C) 1999-2001  Ayman Akt
+    Original Author: Ayman Akt (ayman@pobox.com)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
+
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+#include <main.h>
+#include <list.h>
+#include <session.h>
+#include <redirection.h>
+#include <nportredird.h>
+
+
+ static List MasterSession;
+ static List *const msesnptr=&MasterSession;
+
+ /* export wrappers made available */
+ static Session *_s_LocateSession (List *, int);
+ static int _s_CloseSession (List *, Session *);
+ static int _s_KillSession (List *, Session *);
+ static Session *_s_OpenSession (List *, Socket *, Socket *);
+ static Session *_s_GetFlaggedSession (List *, unsigned);
+
+#ifdef PER_SESSION_LOG
+ static void CloseSessionLogFile (Session *);
+ static int OpenSessionLogFile (Session *);
+#endif
+
+ /*
+ ** Wrapped functions for export... -------------------------------------
+ */
+
+ Session *LocateSession (int fd)
+
+ {
+   return ((Session *)_s_LocateSession(msesnptr, fd));
+
+ }  /**/
+
+
+ int CloseSession (Session *sesnptr)
+
+ {
+   return (_s_CloseSession(msesnptr, sesnptr));
+
+ }  /**/
+
+
+ int KillSession (Session *sesnptr)
+
+ {
+   return (_s_KillSession(msesnptr, sesnptr));
+ }  /**/
+
+
+ Session *OpenSession (Socket *ssptr, Socket *dsptr)
+
+ {
+   return ((Session *)_s_OpenSession(msesnptr, ssptr, dsptr));
+
+ }  /**/
+
+
+ Session *GetFlaggedSession (unsigned flag)
+
+ {
+   return ((Session *)_s_GetFlaggedSession(msesnptr, flag));
+
+ }  /**/
+
+
+ /*
+ ** End of export functions... --------------------------------------------
+ */
+
+
+ /*
+ ** Return the session which is monitoring fd (be it socket or device...)
+ */
+ static Session *_s_LocateSession (List *lstptr, int fd)
+
+ {
+  register ListEntry *eptr;
+
+    if (lstptr->nEntries==0)  return (Session *)NULL;
+
+    for (eptr=lstptr->head; eptr; eptr=eptr->next)
+     {
+       if ((((Session *)(eptr->whatever))->ssptr->sock==fd)||
+           (((Session *)(eptr->whatever))->dsptr->sock==fd))
+        {
+         return ((Session *)(eptr->whatever));
+        }
+     }
+
+   return (Session *)NULL;
+
+ }  /**/
+
+
+ static Session *_s_OpenSession (List *lstptr, Socket *ssptr, Socket *dsptr)
+
+ {
+  ListEntry *eptr;
+  Session *sesnptr;
+
+   xmalloc(sesnptr, (sizeof(Session)));
+   memset (sesnptr, 0, sizeof(Session));
+
+   eptr=AddtoList(lstptr);
+   (Session *)eptr->whatever == sesnptr;
+   sesnptr->when=time(NULL);
+   sesnptr->ssptr=ssptr;
+   sesnptr->dsptr=dsptr;
+
+#ifdef PER_SESSION_LOG
+    if (!(OpenSessionLogFile(sesnptr)))
+     {
+      free (sesnptr);
+      RemovefromList (lstptr, eptr);
+
+      return (Session *)NULL;
+     }
+#endif
+
+   return (Session *)sesnptr;
+
+ }  /**/
+
+
+ /*
+ ** The session is functionally closed and all data structures are freed
+ ** but the sesnptr is still in the list.  This's called in the
+ ** firing squad thread.
+ */
+ static int _s_CloseSession (List *lstptr, Session *sesnptr)
+
+ {
+  register ListEntry *eptr;
+  time_t now;
+
+    for (eptr=lstptr->head; eptr; eptr=eptr->next)
+     {
+       if (((Session *)eptr->whatever)==sesnptr)
+        {
+         now=time(NULL);
+
+         syslog(LOG_INFO, "Closing session:"
+                          " %s:%lu <--> %s:%lu\n",
+              sesnptr->ssptr->haddress, sesnptr->ssptr->port,
+              sesnptr->dsptr->haddress, sesnptr->dsptr->hport);
+
+
+         /* do socket... */
+         close (sesnptr->ssptr->sock);
+         free (sesnptr->ssptr);
+
+         close (sesnptr->dsptr->sock);
+         free (sesnptr->dsptr);
+
+#ifdef PER_SESSION_LOG
+         fflush (sesnptr->logf.file);
+         fclose (sesnptr->logf.file);
+#endif
+
+         return 1;
+        }
+     }
+
+   return 0;
+
+ }  /**/
+
+
+ /*
+ ** Remove last trace of a session--its slot in the list.
+ */
+ static int _s_KillSession (List *lstptr, Session *sesnptr)
+
+ {
+  register ListEntry *eptr;
+
+    for (eptr=lstptr->head; eptr; eptr=eptr->next)
+     {
+       if (((Session *)eptr->whatever)==sesnptr)
+        {
+         RemovefromList (lstptr, eptr);
+
+         return 1;
+        }
+     }
+
+   return 0;
+
+ }  /**/
+
+
+ static Session *_s_GetFlaggedSession (List *lstptr, unsigned flag)
+
+ {
+  register ListEntry *eptr;
+
+    for (eptr=lstptr->head; eptr; eptr=eptr->next)
+     {
+       if (((Session *)eptr->whatever)->stat&flag)
+        {
+         return ((Session *)eptr->whatever);
+        }
+     }
+   return ((Session *)NULL);
+
+ }  /**/
+
+
+#ifdef PER_SESSION_LOG
+ static void CloseSessionLogFile (Session *sesnptr)
+
+ {
+  char path[_POSIX_PATH_MAX];
+  char frmttime[80];
+  time_t now=time(NULL);
+
+   strftime (frmttime, 79, "%H:%M%p %Z on %a, %d %b '%y",
+             localtime(&now));
+
+   logf (sesnptr,
+            "\n---Logging ended %s.\n---Source IP: %s."
+            " Dest IP: %s\n",
+            frmttime, sesnptr->ssptr->haddress, sesnptr->dsptr->haddress);
+
+   fclose (sesnptr->logf.file);
+
+ }  /**/
+#endif
+
+
+#ifdef PER_SESSION_LOG
+ /*
+ ** The successful opening of a log file is mandotry in the current
+ ** implementation. Might be reviewed.
+ */
+ static int OpenSessionLogFile (Session *sesnptr)
+
+ {
+  char path[_POSIX_PATH_MAX];
+  char frmttime[80];
+
+    if (!(valueof("CONFIG_DIR")))
+     {
+      SetPref ("CONFIG_DIR", "/etc/tcpproxy");
+     }
+
+   strftime (frmttime, 79, "%T-%d%b%y", localtime(&sesnptr->when));
+   sprintf (path, "%s/log/%s-%s.log", valueof("CONFIG_DIR"),
+            sesnptr->ssptr->haddress, frmttime);
+
+    if (!(sesnptr->logf.file=fopen(path, "a+")))
+     {
+      say ("### Unable to open session log file for %s: %s\n",
+           path, strerror(errno));
+
+      return 0;
+     }
+
+   setlinebuf (sesnptr->logf.file);
+
+   strftime (frmttime, 79, "%H:%M%p %Z on %a, %d %b '%y",
+             localtime(&sesnptr->when));
+
+   fprintf (sesnptr->logf.file,
+            "\n---Logging started %s.\n---Source IP: %s:%lu"
+            " <--> Dest IP: %s:%lu\n",
+            frmttime, sesnptr->ssptr->haddress, sesnptr->ssptr->port,
+            sesnptr->dsptr->haddress, sesnptr->dsptr->hport);
+   fflush (sesnptr->logf.file);
+   return 1;
+
+ }  /**/
+#endif
+
+
+ void PrintSessions (void)
+
+ {
+#if 0
+  char s[11];
+  register ListEntry *eptr;
+  register Session *sesnptr;
+  extern msredird *const masterptr;
+
+   say ("*** Number of maintained devices %d\n", HowManyInDeviceReg());
+
+    if (msesnptr->nEntries==0)
+     {
+      say ("*** Connections Table empty.\n");
+
+      return;
+     }
+
+   say ("*** Number of active connections %d\n", msesnptr->nEntries);
+
+   say ("+-----+-----+------------+--------------------+-----+\n");
+   say ("|Sock |Devfd|%-12.12s|%-20.20s|When |\n",
+        "Dev Name", "Connecting Host");
+   say ("+-----+-----+------------+--------------------+-----+\n");
+
+    for (eptr=msesnptr->head; eptr; eptr=eptr->next)
+     {
+      sesnptr=(Session *)eptr->whatever;
+
+      strftime (s, 10, "%H:%M", localtime(&sesnptr->when));
+
+      say ("|%-5d|%-5d|%-12.12s|%-20.20s|%-5.5s|\n",
+           sesnptr->sptr->sock,
+           sesnptr->mptr->devfd,
+           sesnptr->mptr->devname,
+           sesnptr->sptr->haddress,
+           s);
+     }
+
+   say ("+-----+-----+------------+--------------------+-----+\n");
+#endif
+ }  /**/

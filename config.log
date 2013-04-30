@@ -1,0 +1,43 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:576: checking whether build environment is sane
+configure:644: checking for a BSD compatible install
+configure:716: checking whether make sets ${MAKE}
+configure:755: checking for working aclocal
+configure:768: checking for working autoconf
+configure:781: checking for working automake
+configure:794: checking for working autoheader
+configure:807: checking for working makeinfo
+configure:821: checking whether make sets ${MAKE}
+configure:851: checking for gcc
+configure:964: checking whether the C compiler (gcc  ) works
+configure:980: gcc -o conftest    conftest.c  1>&5
+configure:1006: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:1011: checking whether we are using GNU C
+configure:1039: checking whether gcc accepts -g
+configure:1071: checking how to run the C preprocessor
+configure:1160: checking for strip
+configure:1198: checking for a BSD compatible install
+configure:1255: checking for bison
+configure:1288: checking for flex
+configure:1322: checking for yywrap in -ll
+configure:1366: checking for socket in -lsocket
+configure:1413: checking for connect in -lnsl
+configure:1460: checking for gethostbyname in -ldns
+configure:1508: checking for pthread_create in -lpthread
+configure:1602: checking for location of <pthread.h>
+configure:1623: checking sa_len member in struct sockaddr
+configure:1633: gcc -c  -I/usr/include  conftest.c 1>&5
+configure: In function 'main':
+configure:1629:23: error: 'struct sockaddr' has no member named 'sa_len'
+configure: failed program was:
+#line 1625 "configure"
+#include "confdefs.h"
+#include <sys/types.h> 
+                 #include <sys/socket.h>
+int main() {
+struct sockaddr sa; sa.sa_len;
+; return 0; }
+configure:1650: checking hstrerror()
+configure:1659: gcc -o conftest  -I/usr/include   conftest.c -lpthread -lnsl  1>&5

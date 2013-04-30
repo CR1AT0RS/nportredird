@@ -1,0 +1,79 @@
+/*
+** sample configuration file for nportredird.
+**
+** Each redirection defines its own 'redirection definition' as oulined below.
+** The man page offers more information on the format and semantics of the
+** the directives (man nportredird). They are mostly self-explanatory, though.
+
+** This file goes into /etc/nportredird as nportredird.conf
+** unless command line arguments were used to override that.
+
+    AYmAN
+*/
+
+options {
+ require_version "+0.5"; //requires 0.5 or higher
+}
+
+redirection active {
+ redirection_id "srv-b ssh"; //optional
+ redirection_type "tcp";
+ destination_host "203.58.157.3";
+ destination_port "2000";
+ listen_on_port "2000";
+ listen_on_ip "192.168.7.1";
+ max_connections "1";
+
+ access_list {
+  deny_all; 
+  allow {
+   //example of intra-redirection
+   "203.58.157.0/24" intra_redirect_to "srv-b telnet";
+   "203.58.11.2";
+   "192.168.0.162/255.255.255.0";
+   "asymmetrica.com";	
+   "127.0.0.1" intra_redirect_to "dalnet";
+  }
+ }
+}
+
+
+redirection {
+ redirection_type "tcp";
+ destination_host "irc.dal.net";
+ destination_port "6667";
+ listen_on_port "2100";
+ max_connections "10";
+
+ access_list {
+  deny_all;
+  allow {
+    "203.55.65.19";
+   "203.58.157.0/24";
+   "203.58.11.2";
+   "192.168.0.162/255.255.255.0";
+   "192.168.70.0/24";
+   "127.0.0.1";
+  }
+ }
+}
+
+/*
+** passive redirections are used for intra-redirections. Facilitate a simple
+** proxy-redirections where a previously accepted network redirection can
+** can be fed into these redirection definitions which are not visible to 
+** the internet, hence the name "intra".
+*/
+redirection passive {
+ redirection_id "srv-b telnet"; //use this to refere to this redir
+ redirection_type "tcp";
+ destination_host "203.58.157.3";
+ destination_port "telnet";
+}
+
+redirection passive {
+ redirection_id "dalnet";
+ redirection_type "tcp";
+ destination_host "irc.dal.net";
+ destination_port "6669";
+}

@@ -1,0 +1,225 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/darren@hiebert.com/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://darren.hiebert.com/ctags/	/official site/
+!_TAG_PROGRAM_VERSION	3.2.2	/with C, C++, Eiffel, Fortran, and Java  support/
+AccessListEntryCreate	accesslist.c	/^ AccessListEntry *AccessListEntryCreate (const char *addr, $/;"	f
+AccessListMatch	accesslist.c	/^ int AccessListMatch (const dList *lstptr, struct in_addr addr)$/;"	f
+AccessListMatchIntraRedir	accesslist.c	/^ char *AccessListMatchIntraRedir (const dList *lstptr, struct in_addr addr)$/;"	f
+AddACLEntry	accesslist.c	/^ int AddACLEntry (dList *lstptr, const char *addr, const char *intraredir)$/;"	f
+AddActiveRedirection	redirection.c	/^ static int AddActiveRedirection (Redirection *redir_ptr)$/;"	f	file:
+AddPassiveRedirection	redirection.c	/^ static int AddPassiveRedirection (Redirection *redir_ptr)$/;"	f	file:
+AddRedirection	redirection.c	/^ int AddRedirection (Redirection *redir_ptr)$/;"	f
+AddThisToList	list.c	/^ ListEntry *AddThisToList (List *lptr, void *usrptr)$/;"	f
+AddThisTodList	list.c	/^ dListEntry *AddThisTodList (dList *lptr, void *usrptr)$/;"	f
+AddressToNetwork	net.c	/^ char *AddressToNetwork (struct in_addr *addr)$/;"	f
+AddtoList	list.c	/^ ListEntry *AddtoList (List *ptr)$/;"	f
+AddtodList	list.c	/^ dListEntry *AddtodList (dList *ptr)$/;"	f
+Align	firingsquad.c	/^ static Session *Align (void)$/;"	f	file:
+AnswerTelnetRequest	nportredird.c	/^ int AnswerTelnetRequest (RedirectionRegistry *rptr)$/;"	f
+Banner	main.c	/^ static void Banner (void)$/;"	f	file:
+BuildLocalHostsNetworksACL	accesslist.c	/^ void BuildLocalHostsNetworksACL (void)$/;"	f
+BuildRedirectionID	redirection.c	/^ static void BuildRedirectionID (Redirection *rptr)$/;"	f	file:
+CONSTANTS_TABLE_SIZE	configlex.c	630;"	d	file:
+CheckActiveRedirectionIntegrity	redirection.c	/^ static int CheckActiveRedirectionIntegrity (Redirection *redir_ptr)$/;"	f	file:
+CheckCommandLine	main.c	/^ void CheckCommandLine (int argc, char *argv[])$/;"	f
+CheckDuplicateRedirection	redirection.c	/^ static int CheckDuplicateRedirection (Redirection *redir_ptr)$/;"	f	file:
+CheckPassiveRedirectionIntegrity	redirection.c	/^ static int CheckPassiveRedirectionIntegrity (Redirection *redir_ptr)$/;"	f	file:
+CleanUpTokens	utils.c	/^ int CleanUpTokens (TokensHdr *tokshdr)$/;"	f
+CleanupListfromArray	list.c	/^ void CleanupListfromArray (List *ptr)$/;"	f
+CleanupRedirectionEntry	redirection.c	/^ void CleanupRedirectionEntry (Redirection *redir_ptr)$/;"	f
+CloseSession	session.c	/^ int CloseSession (Session *sesnptr)$/;"	f
+CloseSessionLogFile	session.c	/^ static void CloseSessionLogFile (Session *sesnptr)$/;"	f	file:
+Connect	net.c	/^ int Connect (struct in_addr *addr, unsigned long port) $/;"	f
+ConnectToDestinationHost	nportredird.c	/^ static Socket *ConnectToDestinationHost (const char *host, unsigned long port)$/;"	f	file:
+ConnectToServer	net.c	/^ int ConnectToServer (const char *server, unsigned long port, Socket *sptr)$/;"	f
+ConnectToThis	net.c	/^ int ConnectToThis (const char *server, unsigned long port, Socket *sptr)$/;"	f
+DecrementCurrentConnectionsCount	nportredird.c	/^ void DecrementCurrentConnectionsCount (RedirectionRegistry *rptr)$/;"	f
+DispatchSocketBuffer	main.c	/^ DispatchSocketBuffer (Session *sesnptr, Socket *ssptr, Socket *dsptr)$/;"	f	file:
+DottedToHost	net.c	/^ char *DottedToHost (char *dip) $/;"	f
+DuplicateAccessList	redirection.c	/^ DuplicateAccessList (RedirectionAccessList *d, RedirectionAccessList *s)$/;"	f	file:
+FileExist	configfile.c	/^ static unsigned long FileExist (char *file, const char *conf)$/;"	f	file:
+FiringSquad	firingsquad.c	/^ void *FiringSquad (void *args)$/;"	f
+GetCurrentConnectionsCount	nportredird.c	/^ unsigned long GetCurrentConnectionsCount (RedirectionRegistry *rptr)$/;"	f
+GetFlaggedSession	session.c	/^ Session *GetFlaggedSession (unsigned flag)$/;"	f
+GetRedirectionRegistry	nportredird.c	/^ static RedirectionRegistry *GetRedirectionRegistry (Redirection *rptr)$/;"	f	file:
+GoDaemon	main.c	/^ static void GoDaemon (void)$/;"	f	file:
+Help	main.c	/^ void Help (void)$/;"	f
+HostToDotted	net.c	/^ char *HostToDotted (char *host)$/;"	f
+IncrementCurrentConnectionsCount	nportredird.c	/^ void IncrementCurrentConnectionsCount (RedirectionRegistry *rptr)$/;"	f
+InitNet	net.c	/^ void InitNet (void)$/;"	f
+InitNportredird	nportredird.c	/^ void InitNportredird (void)$/;"	f
+InitSignals	misc.c	/^ void InitSignals (void)$/;"	f
+IsLocalIP	net.c	/^ int IsLocalIP (const char *ip)$/;"	f
+KEYWORD_TABLE_SIZE	configlex.c	222;"	d	file:
+KillSession	session.c	/^ int KillSession (Session *sesnptr)$/;"	f
+LEX_CONSECUTIVE_DOTS	configlex.c	57;"	d	file:
+LEX_EOF	configlex.c	40;"	d	file:
+LEX_LAST_WAS_DOT	configlex.c	56;"	d	file:
+L_END_INCLUDE	configparse.h	28;"	d
+L_EOS	configparse.h	6;"	d
+L_IPADDR	configparse.h	10;"	d
+L_NUMBER	configparse.h	7;"	d
+L_QSTRING	configparse.h	9;"	d
+L_STRING	configparse.h	8;"	d
+LaunchRedirectors	nportredird.c	/^ void LaunchRedirectors (List *lst)$/;"	f
+LexerFileContext	configlex.c	/^} *LexerFileContext;$/;"	t	file:
+LexerIdentifier	configlex.c	/^} *LexerIdentifier;$/;"	t	file:
+LexerState	configlex.c	/^} LexerState;$/;"	t	file:
+ListEmpty	list.c	/^ boolean ListEmpty (const List *ptr)$/;"	f
+ListfromArray	list.c	/^ List *ListfromArray (void *a, size_t sz, size_t n)$/;"	f
+LocateEntry	list.c	/^ ListEntry *LocateEntry (List *ptr, ListEntry *eptr)$/;"	f
+LocateSession	session.c	/^ Session *LocateSession (int fd)$/;"	f
+MAXPATHLEN	configlex.c	122;"	d	file:
+MasterSession	session.c	/^ static List MasterSession;$/;"	v	file:
+NetworkPrefixToAdress	net.c	/^ struct in_addr NetworkPrefixToAdress (unsigned int bits)$/;"	f
+NetworkToAddress	net.c	/^ struct in_addr *NetworkToAddress (const char *name)$/;"	f
+OpenFile	utils.c	/^ int OpenFile (File *file)$/;"	f
+OpenSession	session.c	/^ Session *OpenSession (Socket *ssptr, Socket *dsptr)$/;"	f
+OpenSessionLogFile	session.c	/^ static int OpenSessionLogFile (Session *sesnptr)$/;"	f	file:
+PortToService	net.c	/^ char *PortToService (int port, unsigned short proto)$/;"	f
+PrintAccessList	accesslist.c	/^ void PrintAccessList (const dList *lstptr)$/;"	f
+PrintSessions	session.c	/^ void PrintSessions (void)$/;"	f
+ProcessConfigfile	configfile.c	/^ int ProcessConfigfile (const char *conf)$/;"	f
+ProtocolToName	net.c	/^ char *ProtocolToName (unsigned short proto)$/;"	f
+RawIPToDotted	net.c	/^ char *RawIPToDotted (unsigned long raw)$/;"	f
+ReadFromSocket	main.c	/^ static int ReadFromSocket (Session *sesnptr, Socket *sptr)$/;"	f	file:
+RedirectionRegistryLocateByID	nportredird.c	/^ RedirectionRegistry *RedirectionRegistryLocateByID (List *lst, const char *str)$/;"	f
+RedirectionRegistryMarkInactive	nportredird.c	/^ void RedirectionRegistryMarkInactive(Redirection *rptr)$/;"	f
+RedirectionSignalFiringSquad	nportredird.c	/^ void  RedirectionSignalFiringSquad (RedirectionRegistry *rptr)$/;"	f
+RegisterRedirection	nportredird.c	/^ Redirection *RegisterRedirection (Redirection *rptr)$/;"	f
+RemoveListEntry	list.c	/^ RemoveListEntry (List *lptr, ListEntry *eptr, int how, void (*f)(void *), ...)$/;"	f
+RemoveListHead	list.c	/^ int RemoveListHead (List *lptr, int n, void (*free_func)(ListEntry *))$/;"	f
+RemoveThisFromList	list.c	/^ int RemoveThisFromList (List *ptr, void *usrptr)$/;"	f
+RemovefromList	list.c	/^ int RemovefromList (List *ptr, ListEntry *eptr)$/;"	f
+RemovefromdList	list.c	/^ dListEntry *RemovefromdList (dList *ptr, dListEntry *eptr)$/;"	f
+RequestSocket	net.c	/^ int RequestSocket (void)$/;"	f
+RequestTCPSocket	net.c	/^ int RequestTCPSocket (void)$/;"	f
+ResolveAddress	net.c	/^ int ResolveAddress (const char *address, ResolvedAddress *raddr)$/;"	f
+ServiceToPort	net.c	/^ int ServiceToPort (const char *name, unsigned short proto)$/;"	f
+SetConfigurationDefaults	main.c	/^ void SetConfigurationDefaults (void)$/;"	f
+SetSocketFlags	net.c	/^ int SetSocketFlags (int socket, int ON_OFF, int flags)$/;"	f
+SetupListeningSocket	net.c	/^ int SetupListeningSocket (const char *ip, unsigned port, unsigned sock_type)$/;"	f
+Shoot	firingsquad.c	/^ static void Shoot (Session *sesnptr)$/;"	f	file:
+SplitIntoTokens	utils.c	/^ int SplitIntoTokens (TokensHdr *tokshdr)$/;"	f
+SplitTokens	utils.c	/^ int SplitTokens (TokensHdr *tokshdr, char *origstr, int ntoks, char div)$/;"	f
+T_ACCESS_LIST	configparse.h	19;"	d
+T_ACTIVE	configparse.h	24;"	d
+T_ALLOW	configparse.h	22;"	d
+T_ALLOW_ALL	configparse.h	20;"	d
+T_DENY	configparse.h	23;"	d
+T_DENY_ALL	configparse.h	21;"	d
+T_DESTINATION_HOST	configparse.h	13;"	d
+T_DESTINATION_PORT	configparse.h	15;"	d
+T_INTRA_REDIRECT_TO	configparse.h	27;"	d
+T_LISTEN_ON_IP	configparse.h	17;"	d
+T_LISTEN_ON_PORT	configparse.h	16;"	d
+T_MAX_CONNECTIONS	configparse.h	18;"	d
+T_OPTIONS	configparse.h	14;"	d
+T_PASSIVE	configparse.h	25;"	d
+T_REDIRECTION	configparse.h	11;"	d
+T_REDIRECTION_ID	configparse.h	26;"	d
+T_REDIRECTION_TYPE	configparse.h	12;"	d
+T_REQUIRE_VERSION	configparse.h	29;"	d
+Thread	main.c	/^ void *Thread (void *ptr)$/;"	f
+ValidateRequiredVesrion	misc.c	/^ int ValidateRequiredVesrion (const char *s)$/;"	f
+YYSTYPE	configparse.h	/^} YYSTYPE;$/;"	t
+_h_errlist	net.c	/^ static char *_h_errlist[]={$/;"	v	file:
+_h_nerr	net.c	/^static int _h_nerr = sizeof(_h_errlist)\/sizeof(_h_errlist[0]);$/;"	v	file:
+_s_CloseSession	session.c	/^ static int _s_CloseSession (List *lstptr, Session *sesnptr)$/;"	f	file:
+_s_GetFlaggedSession	session.c	/^ static Session *_s_GetFlaggedSession (List *lstptr, unsigned flag)$/;"	f	file:
+_s_KillSession	session.c	/^ static int _s_KillSession (List *lstptr, Session *sesnptr)$/;"	f	file:
+_s_LocateSession	session.c	/^ static Session *_s_LocateSession (List *lstptr, int fd)$/;"	f	file:
+_s_OpenSession	session.c	/^ static Session *_s_OpenSession (List *lstptr, Socket *ssptr, Socket *dsptr)$/;"	f	file:
+access_list	accesslist.c	/^ static dList access_list;$/;"	v	file:
+acl_ptr	accesslist.c	/^ const dList *const acl_ptr=&access_list;$/;"	v
+add_to_identifier	configlex.c	/^add_to_identifier(LexerIdentifier id, int c) {$/;"	f	file:
+atoul	net.c	/^ unsigned long atoul (char *addr)$/;"	f
+buffer	configlex.c	/^	char buffer[LEX_MAX_IDENT_SIZE+1];$/;"	m	struct:lexer_identifier
+c_version	main.c	/^ const char *c_version="0.6";$/;"	v
+clear_identifier	configlex.c	/^clear_identifier(LexerIdentifier id) {$/;"	f	file:
+cp	configparse.h	/^	char *cp;$/;"	m	union:
+current_file	configlex.c	/^LexerFileContext current_file = NULL;$/;"	v
+dListEmpty	list.c	/^ boolean dListEmpty (const dList *ptr)$/;"	f
+define_symbol	configlexutil.c	/^define_symbol(symbol_table st, char *key, int type, symbol_value value,$/;"	f
+domain_char	configlex.c	71;"	d	file:
+dprint_symbol_table	configlexutil.c	/^dprint_symbol_table(int level, symbol_table st) {$/;"	f
+dummy	misc.c	/^ void dummy (void)$/;"	f
+dup_identifier	configlex.c	/^dup_identifier(LexerIdentifier id) {$/;"	f	file:
+errors	configlex.c	/^        int		errors;$/;"	m	struct:lexer_file_context
+finish_identifier	configlex.c	/^finish_identifier(LexerIdentifier id) {$/;"	f	file:
+flags	configlex.c	/^	u_int		flags;$/;"	m	struct:lexer_file_context
+flags	configlex.c	/^	unsigned int flags;$/;"	m	struct:lexer_identifier
+free_symbol	configlexutil.c	/^free_symbol(symbol_table st, symbol_entry ste) {$/;"	f
+free_symbol_table	configlexutil.c	/^free_symbol_table(symbol_table st) {$/;"	f
+get_next_char	configlex.c	/^get_next_char(int comment_ok) {$/;"	f
+h_strerror	net.c	/^ char *h_strerror (int error)$/;"	f
+id	configlex.c	/^static LexerIdentifier id;$/;"	v	file:
+identifier	configlex.c	/^		scan, number, identifier, ipv4, quoted_string$/;"	e	file:	enum:lexer_state
+identifier_char	configlex.c	73;"	d	file:
+index	configlex.c	/^	int index;$/;"	m	struct:lexer_identifier
+init_keywords	configlex.c	/^init_keywords() {$/;"	f	file:
+ipv4	configlex.c	/^		scan, number, identifier, ipv4, quoted_string$/;"	e	file:	enum:lexer_state
+isdottedquad	net.c	/^ int isdottedquad (const char *address)$/;"	f
+keyword	configlex.c	/^struct keyword {$/;"	s	file:
+keyword_table	configlex.c	/^static symbol_table keyword_table = NULL;$/;"	v	file:
+last_token	configlex.c	/^static int last_token;$/;"	v	file:
+last_yylval	configlex.c	/^static YYSTYPE last_yylval;$/;"	v	file:
+lexer_begin_file	configlex.c	/^lexer_begin_file(const char *filename, FILE *stream) {$/;"	f
+lexer_end_file	configlex.c	/^lexer_end_file(void) {$/;"	f
+lexer_file_context	configlex.c	/^typedef struct lexer_file_context {$/;"	s	file:
+lexer_identifier	configlex.c	/^typedef struct lexer_identifier {$/;"	s	file:
+lexer_initialize	configlex.c	/^lexer_initialize() {$/;"	f
+lexer_initialized	configlex.c	/^static int lexer_initialized = 0;$/;"	v	file:
+lexer_setup	configlex.c	/^lexer_setup(void) {$/;"	f
+lexer_shutdown	configlex.c	/^lexer_shutdown(void) {$/;"	f
+lexer_state	configlex.c	/^typedef enum lexer_state {$/;"	g	file:
+lhacl_ptr	accesslist.c	/^ const dList *const lhacl_ptr=&lhosts_list;$/;"	v
+lhosts_list	accesslist.c	/^ static dList lhosts_list;$/;"	v	file:
+line_number	configlex.c	/^	int		line_number;$/;"	m	struct:lexer_file_context
+lnacl_ptr	accesslist.c	/^ const dList *const lnacl_ptr=&lnetworks_list;$/;"	v
+lnetworks_list	accesslist.c	/^ static dList lnetworks_list;$/;"	v	file:
+localhost	net.c	/^ char *localhost="";$/;"	v
+localip	net.c	/^ unsigned long localip;$/;"	v
+lookup_symbol	configlexutil.c	/^lookup_symbol(symbol_table st, const char *key, int type,$/;"	f
+main	main.c	/^ int main (int argc, char *argv[])$/;"	f
+master	nportredird.c	/^ static msredird master;$/;"	v	file:
+masterptr	nportredird.c	/^ msredird *const masterptr=&master;$/;"	v
+message	configlex.c	/^static char message[20480];$/;"	v	file:
+msesnptr	session.c	/^ static List *const msesnptr=&MasterSession;$/;"	v	file:
+name	configlex.c	/^	const char *	name;$/;"	m	struct:lexer_file_context
+name	configlex.c	/^        char *name;$/;"	m	struct:keyword
+new_symbol_table	configlexutil.c	/^new_symbol_table(int size_guess, free_function free_value) {$/;"	f
+next	configlex.c	/^			next;$/;"	m	struct:lexer_file_context
+nsignal	misc.c	/^ signal_f *nsignal (int signo, signal_f *func)$/;"	f
+num	configparse.h	/^	long num;$/;"	m	union:
+num_dots	configlex.c	/^	int num_dots;$/;"	m	struct:lexer_identifier
+number	configlex.c	/^		scan, number, identifier, ipv4, quoted_string$/;"	e	file:	enum:lexer_state
+parser_complain	configlex.c	/^parser_complain(int is_warning, int print_last_token, const char *format,$/;"	f	file:
+parser_error	configlex.c	/^parser_error(int print_last_token, const char *format, ...) {$/;"	f
+parser_warning	configlex.c	/^parser_warning(int print_last_token, const char *format, ...) {$/;"	f
+put_back_char	configlex.c	/^put_back_char(int c) {$/;"	f
+quoted_string	configlex.c	/^		scan, number, identifier, ipv4, quoted_string$/;"	e	file:	enum:lexer_state
+s_int	configparse.h	/^	int s_int;$/;"	m	union:
+scan	configlex.c	/^		scan, number, identifier, ipv4, quoted_string$/;"	e	file:	enum:lexer_state
+scan_to_comment_end	configlex.c	/^scan_to_comment_end(int c_plus_plus_style) {$/;"	f	file:
+special_char	configlex.c	72;"	d	file:
+special_chars	configlex.c	/^static char special_chars[256];$/;"	v	file:
+state	configlex.c	/^	LexerState	state;$/;"	m	struct:lexer_file_context
+stream	configlex.c	/^	FILE *		stream;$/;"	m	struct:lexer_file_context
+symbol_hash	configlexutil.c	/^symbol_hash(const char *key, int prime) {$/;"	f	file:
+t_compiled	version.c	/^char *t_compiled="Sun Mar 18 2001 at 00:40:42 EST";$/;"	v
+token	configlex.c	/^	int token;$/;"	m	struct:keyword
+token_to_text	configlex.c	/^token_to_text(int token, YYSTYPE lval) {$/;"	f	file:
+tokenize	utils.c	/^ char *tokenize (char **str, const char c)$/;"	f
+u_compiled	version.c	/^char *u_compiled="ayman@elite";$/;"	v
+undefine_symbol	configlexutil.c	/^undefine_symbol(symbol_table st, char *key, int type) {$/;"	f
+unit_to_ulong	configlexutil.c	/^unit_to_ulong(char *in, u_long *out) {	$/;"	f
+warnings	configlex.c	/^        int		warnings;$/;"	m	struct:lexer_file_context
+where	configlex.c	/^static char where[MAXPATHLEN + 100];$/;"	v	file:
+whitespace	configlex.c	70;"	d	file:
+whitespace	utils.c	193;"	d	file:
+wipespaces	utils.c	/^ void wipespaces (char *s)$/;"	f
+yyerror	configlex.c	/^yyerror(const char *message) {$/;"	f
+yylex	configlex.c	/^ int yylex() $/;"	f

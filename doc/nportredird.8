@@ -1,0 +1,454 @@
+.TH NPORTREDIRD 8 "18 March 2001"
+.SH NAME
+nportredird \- TCP/IP Networks Port Redirector
+.SH SYNOPSIS
+.B nportredird
+.RB [ \-h
+.RB ]
+.RB [ \-v
+.RB ]
+.RB [ \-f
+.RB config_file
+.RB ]
+.RB [ \-c
+.RB config_dir
+.RB ]
+.RB [ \-d 
+.RB 1|0]
+.SH DESCRIPTION
+.I nportredird
+is a TCP/IP networks port redirector (forwarder) server program. It belongs
+to a category of networking utilities known as proxy servers. 
+.I nportredird
+supports multible, concurrent connections to one, or more destinations
+in a multi\-threaded fashion.
+.I nportredird
+allows for limited, but useful set of restriction policies, principally because
+your security is assumed to be implemented at lower level than this. Nonetheless
+they are quite useful in certain situations.
+.I nportredird
+reads its configuration data off a configuration file, the format of which is
+detailed below. 
+.I nportredird
+will fail to run without its configuration file.
+
+.SH OPTIONS
+The program is configuration file-driven, this is obvious from its small
+set of command line arguments. The program has sane built-in variables which
+are unlikely to stand in your way, but most importantly, they
+insure command line argument-free invocation.
+.TP
+.BI \-h
+Supported command line arguments.
+.TP
+.BI \-v
+Version information and Copyright notice.
+.TP
+.B \-f "config_file"
+use
+.I config_file
+as the configuration file. The default configuration file is
+.I nportredird.conf
+and is searched in 
+.I /etc/nportredird
+by default unless
+.I \-c
+was used to overwrite the default configuration directory name.
+.TP
+.B \-c "config_dir"
+.I config_dir
+will become the configuration directory, under which the default configuration file is searched unless 
+.I \-f
+has been used to redefine a new file name.
+.TP
+.B \-d "1|0      "
+By default, the program runs in daemon mode whereby it's not associated
+with a controlling terminal. To change this behaviour, use this option. Please notice
+the program will continue to log with your system's syslog facility irrespective of its running mode. 
+
+.SH "CONFIGURATION FILE"
+The configuration file is well structured and features simple grammer. 
+Comments
+can be inserted anywhere C/C++ style.
+.sp
+At the root of it, the file is a  collection of top-level, semantical
+grouping elements, each of which containing zero or more sub-level elements.
+Semantical grouping allows for the aggregation of logically, or semantically
+related elements.
+.sp
+The following definitions are used in describing the config file structure and semantics.
+
+.I "directive"
+A reserved keyword with semantical value attached to it.
+
+.I "element" 
+a logical config file entity, single or multi-valued.
+
+.I "statement"
+a syntaticaly complete config file entity, single or multi-valued.
+  
+.I "top-level" 
+an element that appears at the root of the document and never nested.
+
+.I "sub-level"
+an element that is child, or grand child of a top-level element.
+
+.I "single-value"
+an element that appears inside a group and has one value.
+
+.I "multi-value"
+a top or sub-level element that can hold one, or more elements.
+.sp
+A single-value element can assume any of the following forms:
+ Single directive.
+ A directive followed by a literal value.
+ A literal value.
+ A literal followed by a directive followed by a literal.
+.sp
+A literal value is formed by enclosing a string of chars between two '"' quotes. To form a valid statement, the element must end with a semicolon ';'.
+
+.sp
+The skeleton of the config file can look something like this:
+.nf
+ options {
+  
+ }
+
+ redirection active {
+ }
+ .
+ .
+ .
+  
+ redirection passive {
+ }
+ .
+ .
+ .
+
+.fi
+.sp
+The option element should precede all top-level elements. This can aid in premature termination of the program in certain situations.
+.sp
+Several instances of this skeleton are defined below.
+A description of supported directives, follows. 
+
+.SS "options"
+A top-level, multi-value element which encloses global parameters. The 
+.I options
+element must come as the first non-comment and top-level element in the file. 
+
+.I SYNTAX  
+options {...}
+
+.I CONTEXT  
+top-level
+
+
+.SS "require_version"
+Defines a precondition, absence of which will induce premature termination of the program--incorrect version. The version can be specified in three different forms:
+ +ver the program has to have a version >= ver
+ -ver the program has to have a version <= ver
+  ver the program has to have exactly ver
+.sp
+The offecial version of the program is determined by invoking the program with 
+.IR "-v"
+command line argument.
+.sp
+.I SYNTAX  
+require_version "value"
+
+.I CONTEXT  
+options
+
+.I POSSIBLE VALUES
++ver|-ver|ver
+
+.SS "redirection"
+A top-level, multi-value element. It
+represents a logical grouping of a related set of parameters which are necessary
+for the definition of a redirection operation.
+You can define more than one 
+.IR redirection ", "
+but you need at least one valid redirecton definition.
+The program supports two kind of redirections: active and passive--with respect to their network visibility.
+.sp
+Active redirection is a full-featured definition of a redirection operation; more specifically it defines a network port, onto which incoming connections can be accepted and a redirection target (destination address), to which traffic originating from previously accepted connection is redirected. Traffic is redirect both ways.
+ 
+A passive redirection defines a subset of the active redirection. Noted amongst the absent parameters is a listening network port, immediately limiting its usefulness with respect to external network requests.  
+.sp
+Passive redirections are used in a feature which I call 
+.IR intra-redirection "."
+An accepted connection can be "intra-routed" to a network-invisible redirector.
+The intra-redirection can only be referenced from within an active redirection's access list 
+.I allow
+element. See examples below.
+
+.I SYNTAX 
+redirection [active|passsive] {...}
+
+.I CONTEXT  
+top-level
+
+.SS "redirection_id"
+Tags a redirection definition with an identifier which can be used to reference this redirection. Useful in intra-redirection. Log entries reference this as well. The program will generate default id in absence of user-defined one.
+
+.I SYNTAX  
+redirection_id "value"
+
+.I CONTEXT  
+redirection
+
+.I POSSIBLE VALUES  
+user-defined or system generated.
+
+.SS "redirection_type"
+This directive defines the redirection type. Certain redirection types require
+different communication semantics. Currently only tcp-redirection is supported.
+
+.I SYNTAX  
+redirection_type "value"
+
+.I CONTEXT  
+redirection
+
+.I POSSIBLE VALUES  
+tcp
+
+.SS "destination_host"
+Defines the internet address of the remote end to which the redirection applies.
+
+An interesting destination can be specified by defining the 
+.I destination_host
+as
+.I "/dev/null"
+This effectively means the redirection acts as a blackhole, swallows all the packets which are redirected through it. You must define the 
+.I destination_port
+as 0.
+
+.I SYNTAX 
+destination_host "value"
+
+.I CONTEXT  
+redirection
+
+.I POSSIBLE VALUES  
+IPv4 number, host name or the special destination /dev/null
+
+.SS "destination_port"
+The internet service at the remote end to which the redirection applies.
+
+
+.I SYNTAX 
+destination_port "value"
+
+.I CONTEXT  
+redirection
+
+.I POSSIBLE VALUES  
+port number or service name
+
+
+.SS "listen_on_ip"
+In multi-homed configurations it is possible to specify which IP address on your local machine can participate in redirection. 
+
+.I SYNTAX  
+listen_on_ip "value"
+
+.I CONTEXT 
+redirection
+
+.I POSSIBLE VALUES  
+IPv4 number
+
+
+.SS "listen_on_port"
+The service at the local end on which redirections are accepted.
+
+
+.I SYNTAX  
+listen_on_port "value"
+
+.I CONTEXT 
+redirection
+
+.I POSSIBLE VALUES  
+port number or service name
+
+
+.SS "max_connections"
+By default no limit is observerd as to the number of concurrent connections
+that can be maintained to a redirected service. To define a limit, set this.
+
+
+.I SYNTAX  
+max_connections "value"
+
+.I CONTEXT  
+redirection
+
+.I POSSIBLE VALUES 
+count of allowed connections
+
+
+.SS "access_list"
+A multi-value element which defines access policy based on source IP and network numbers.
+By default, anyone can connect to the redirection server. If that's unacceptable,
+you can group hosts/networks under certain access policy: allow or deny.
+An allow policy can define 
+.IR "intra-redirection".
+see the definition of 
+.IR "allow"
+below for more information.
+It works as follows: one policy can be specified per redirection definition.
+If the policy was to allow, then everyone is denied access but those listed in the allow group. On the flip side of that, if the policy was to deny, then every one is allowed access but those listed in the deny group.
+See the definition of the directive
+.I allow
+and 
+.I deny
+below.
+
+Access lists are not shared across multible 
+redirection
+definitions; each redirection defines its own access list.
+
+.I SYNTAX  
+access_list {...}
+
+.I CONTEXT  
+redirection
+
+.SS "allow"
+A multi-value element defined in the context of
+.I access_list
+where you can specify a list of access-allowed hosts and/or networks. 
+
+.I SYNTAX
+allow {"host_or_network"; "host_or_network" intra_redirect_to "redir_id"; ...}
+
+.I CONTEXT
+redirection::accesslist
+
+.I POSSIBLE VALUES
+One, or more IPv4 numbers or host names. You can define a mask, using CIDR
+notation or the traditional dotted-quad.
+.sp
+An alternative syntax is when you specify an intra-redirection operation. An accpeted connection on this particular host ot network can be further redirected to somewhere else.
+
+
+
+.SS "deny"
+A multi-value element defined in the context of
+.I access_list
+where you can specify a list of access-denied hosts and/or networks. 
+
+.I SYNTAX
+deny {"host_or_network"; ...}
+
+.I CONTEXT
+redirection::accesslist
+
+.I POSSIBLE VALUES
+One, or more IPv4 numbers or host names. You can define a mask, using CIDR
+notation or the traditional dotted-quad.
+
+.SS "intra_redirect_to"
+A directive that causes a new redirection operation on a previously accepted connection.
+.I SYNTAX
+intra_redirect_to "redir_id"
+
+.I CONTEXT
+redirection::accesslist::allow
+
+.I POSSIBLE VALUES
+A previously, or implicitly defined redirection id.
+
+.SH "SAMPLE CONFIGURATION FILE"
+Please note the options element is mandatory even if it is empty.
+.sp
+
+.SS "This is a minimal working configuration file"
+.sp
+.nf
+options {
+}
+ 
+redirection {
+ redirection_type "tcp";
+ destination_host "192.168.0.1";
+ destination_port "23";
+ listen_on_port "2000";
+}
+
+.fi
+A server driven by this file will forward incoming connections on port 2000 to
+192.168.0.1 on port 23. Any number of redirections could be made from anywhere.
+.sp
+.SS "A little more interesting configuration file"
+.nf
+options {
+}
+ 
+redirection {
+ redirection_type "tcp";
+ destination_host "192.168.0.1";
+ destination_port "telnet";
+ listen_on_port "2000";
+ max_connections "10";
+
+ access_list {
+  allow { 
+   "203.58.157.0/24";
+   "203.58.11.2";
+   "192.168.0.162/255.255.255.0";
+   "192.168.70.0/24";
+   "127.0.0.1";
+  } /* everyone else denied */
+ }
+}
+
+.fi
+Here we define an upper limit on the number of possible concurrent connections. Also we only allow incoming connections from hosts/networks defined in the access list. Of course you can keep on adding more redirection definitions.
+
+.sp
+.SS "A little more interesting configuration file"
+.nf
+options {
+ require_version "+0.5"; //need ver 0.5 or higher
+}
+
+redirection {
+ redirection_type "tcp";
+ destination_host "192.168.0.1";
+ destination_port "telnet";
+ listen_on_port "2000";
+ max_connections "10";
+
+ access_list {
+  allow { 
+   "203.58.157.0/24";
+   "203.58.11.2";
+   "192.168.0.162/255.255.255.0" intra_redirect_to "here"; 
+   "127.0.0.1";
+  } /* everyone else denied */
+ }
+}
+
+redirection passive {
+ redirection_id "here"; //use this to refere to this redirector
+ redirection_type "tcp";
+ destination_host "127.0.0.1";
+ destination_port "telnet";
+}
+
+.fi
+This redirector will accept connections originating from hosts defined in it allow list. A particular host entry, will be redirected into different destination as defined in the redirector identified by "here".
+.sp
+.SH "ENVIRONMENT VARIABLES"
+None. 
+.SH "SEE ALSO"
+.SH BUGS
+Please report your findings to ayman@pobox.com
+.SH AUTHOR
+Ayman Akt (ayman@pobox.com).
+.\" end of man page

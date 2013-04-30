@@ -1,0 +1,21 @@
+Begin3
+Title: nportredird: TCP/IP Networks Port Redirector
+Version: 0.6
+Entered-date: 18MAR01
+Description: Nportredird is TCP/IP port redirector. It supports multible, 
+             concurrent redirections to one, or more hosts in 
+             multi-threaded fashion. It has access policy based on 
+             source IP numbers and can limit the number of
+	         concurrent redirections. Only TCP traffic is supported 
+             at present.
+Keywords: Network Redirector, Network Forwarder, TCP proxy
+Author: ayman@pobox.com (Ayman Akt)
+Maintained-by: ayman@pobox.com (Ayman Akt)
+Primary-site: http://www.asymmetrica.com/software/nportredird/download/
+			  70848 nportredird-0.6.tar.gz	
+Alternate-site: ftp://metalab.unc.edu /pub/Linux/system/network/daemons/
+                70848 nportredird-0.6.tar.gz
+Original-site: http://www.asymmetrica.com 
+Platforms: Linux, POSIX, pthread, FreeBSD    
+Copying-policy: GPL
+End

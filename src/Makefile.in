@@ -1,0 +1,101 @@
+DEP_DIR    := .dep
+OBJDIR     := obj
+BINDIR     := ../bin
+
+EFILE      := nportredird
+INCLUDES   := -I./include
+SHELL      := /bin/sh
+CFLAGS     := $(INCLUDES) @CFLAGS@
+VERSION    := @it_version@
+CC         := @CC@
+DEFS       := @DEFS@
+LIBS       := @LIBS@
+LDFLAGS    :=	
+INSTALL    := @INSTALL@
+prefix     := @prefix@
+exec_prefix := @exec_prefix@
+SBIN_DIR    := @sbindir@
+MAN_DIR     := @mandir@
+ETC_DIR     := @sysconfdir@
+VAR_DIR     := @localstatedir@
+
+STRIP      := @STRIP@
+YACC	      := @YACC@
+LEX        := @LEX@
+YACCFLAGS  := -d
+LEXFLAGS  :=
+
+vpath %.h include
+
+DSOURCE      := configparse.c
+DOBJECTS	 := $(OBJDIR)/configparse.o
+
+SOURCES      := $(wildcard *.c)
+OBJECTS      := $(patsubst %.c,$(OBJDIR)/%.o,$(SOURCES))
+DEP_FILES    := $(patsubst %.c,$(DEP_DIR)/%.d,$(SOURCES))
+
+SOURCES		 := $(SOURCES) $(DSOURCE)
+OBJECTS		 := $(OBJECTS) $(DOBJECTS)
+#
+# Cancel built-in implicit rule for %.o
+#
+%.o : %.c
+
+#
+#Redifine the implicit rule fo %.o
+#
+$(OBJDIR)/%.o : %.c
+	$(CC) -c $(CFLAGS) $(DEFS) $< -o $@
+
+
+.PHONY: all
+all : whatsup version $(EFILE)
+
+
+$(EFILE): $(OBJECTS)
+	@echo
+	@echo " Linking object files..."
+	@echo
+	$(CC)  $(LDFLAGS) $^ -o $(BINDIR)/$(EFILE) $(LIBS)
+
+
+include $(DEP_FILES)
+
+
+.PHONY: whatsup
+whatsup:
+	@echo
+	@echo " `date '+ %A, %d %B %Y'`"
+	@echo " Generating object files for $(EFILE) $(VERSION)..."
+	@echo
+	@if [ -r configparse.y ]; then \
+		$(YACC) $(YACCFLAGS) -o configparse.c configparse.y; \
+		cd include; ln -sf ../configparse.h .; \
+		cd ..; \
+	else \
+		echo "Missing grammar file..."; \
+		exit; \
+	fi
+
+$(DEP_DIR)/%.d: %.c
+	$(SHELL) -ec '$(CC) -M $(CFLAGS) $< \
+       | sed '\''s/\($*\)\.o[ :]*/$(OBJDIR)\/\1.o $(@D)\/$(@F) : /g'\'' > $@; \
+       [ -s $@ ] || rm -f $@'
+
+
+.PHONY: version
+version:
+	@chmod 755 version.c.in; ./version.c.in
+
+
+.PHONY: tags
+tags:
+	@echo "Updating tags file..."
+	@ctags --recurse=yes --sort=yes *.[ch]
+
+.PHONY: clean
+clean:
+	rm -rf obj/*.o
+	rm -rf .dep/*.d
+	rm -rf ../bin/*
+	rm -rf core *.core *.a *.so

@@ -1,0 +1,7 @@
+REQUIREMENTS:
+ - gcc compiler
+ - GNU ``make''
+ - ``yacc'' parser generator program or derivetive, e.g. ``bison''
+ - an implementation of pthread. e.g. LinuxThreads or GNU pth
+
+ Simply do: ./configure; make; make install 

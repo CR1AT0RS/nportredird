@@ -1,0 +1,64 @@
+
+
+18 Mar 2001 -- 0.6
+---------------------
+Fixes:
+ - The issue with unclaimed threads has been dealt with. It appears to be
+   fixed. This is actually the highlight of this release.
+
+Additions:
+ - A new, rather unusual feature whereby the destination of a redirection can
+   be specified as "/dev/null" has been added. It is useful for debuging or 
+   situations where the destination host is unspecified but you still want 
+   the incoming connections to continue to flow in uninterrupted.
+ - Robustness-oriented fixes have been applied throughout, especially in the
+   areas of I/O.
+ - Minor clean-ups.
+    
+
+
+27 Oct 2000 -- 0.5
+---------------------
+Fixes:
+ - Minor clean ups.
+
+Additions:
+ - Config file features new keywords (passive, active, intra_redirect_to,
+   redirection_id, require_version, listen_on_ip). No backword incompatibilites
+   introduced though except for the fact that and ``options'' element must be
+   present in the configuration file even if it is empty.
+ - Added a new feature allowing for second level of redirection, or what I 
+   call "Intra-redirection". It allows for previously accepted network 
+   connection to be re-redirected to another target.
+ - It is now possible to specify a local ip to be bound to a listening socket.
+   Which means if you have more than one ip assigned to your host (multi-homed)
+   then you can accept incoming redirections targeted at the specifed 
+   ip.
+ - Simple yet effective config file version lock. Insures that the config file
+   is processed with the correct version of the program.
+ - Minor structural change to the config file: the ``options'' group should
+   appear first in the file. 
+ - Updates to documentation.
+
+
+20 April 2000  -- 0.4 
+---------------------
+Fixes:
+ - Fixed wrong interpretation of network prefix
+ 
+Additions:
+ - The configuration script looks for libc_r under FreeBSD if pthread
+   was not found.
+ - Ability to use IP numbers as well as host names in the config file.
+ - It's now possible to use service names and port numbers interchangeably.
+   e.g. you could use either "telnet" or "23" as a valid port definition.
+
+
+15 April 2000  --  0.3 (first public release)
+---------------
+
+ - Completely reworked configuration file
+ - Support for multible redirections
+ - Command line  parameters
+ - Implemented access list
+ - Implemented limit on the number of concurrent connections
